@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="login-card" aria-label="Create account form">
+      <img src="logo.png" alt="BudgetBuddy logo" style="display:block;margin:0 auto 12px;width:min(70%,230px);height:auto;">
+      <h1 class="signup-title">Sign up</h1>
+ 
+      <form class="login-form">
+        <!-- Name -->
+        <div class="field-group">
+          <div class="input-wrap">
+            <input id="username" name="username" type="text" placeholder=" " required />
+            <label for="username">Name</label>
+          </div>
+        </div>
+ 
+        <!-- Email -->
+        <div class="field-group">
+          <div class="input-wrap">
+            <input id="email" name="email" type="email" placeholder=" " required />
+            <label for="email">Email</label>
+          </div>
+        </div>
+ 
+        <!-- Password -->
+        <div class="field-group">
+          <div class="input-wrap">
+            <input id="password" name="password" type="password" placeholder=" " required />
+            <label for="password">Password</label>
+          </div>
+          <ul id="password-criteria">
+            <li id="length">✔ At least 8 characters</li>
+            <li id="uppercase">✔ One uppercase letter</li>
+            <li id="number">✔ One number</li>
+            <li id="special">✔ One special character (@$!%*?&)</li>
+          </ul>
+        </div>
+ 
+        <!-- Confirm Password -->
+        <div class="field-group">
+          <div class="input-wrap">
+            <input id="confirm-password" name="confirm-password" type="password" placeholder=" " required />
+            <label for="confirm-password">Confirm Password</label>
+          </div>
+          <small id="match-msg" style="color: crimson; display: none;">Passwords do not match</small>
+        </div>
+ 
+        <button class="login-btn" type="submit">Sign up</button>
+ 
+        <div class="meta-links centered-link">
+          <a href="index.html">Already have an account?</a>
+        </div>
+      </form>
+    </section>
+  </main>
+ 
+  <script>
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm-password");
+    const matchMsg = document.getElementById("match-msg");
+ 
+    const lengthCriteria = document.getElementById("length");
+    const uppercaseCriteria = document.getElementById("uppercase");
+    const numberCriteria = document.getElementById("number");
+    const specialCriteria = document.getElementById("special");
+ 
+    passwordInput.addEventListener("input", () => {
+      const value = passwordInput.value;
+      value.length >= 8 ? lengthCriteria.classList.add("valid") : lengthCriteria.classList.remove("valid");
+      /[A-Z]/.test(value) ? uppercaseCriteria.classList.add("valid") : uppercaseCriteria.classList.remove("valid");
+      /\d/.test(value) ? numberCriteria.classList.add("valid") : numberCriteria.classList.remove("valid");
+      /[@$!%*?&]/.test(value) ? specialCriteria.classList.add("valid") : specialCriteria.classList.remove("valid");
+    });
+ 
+    confirmPasswordInput.addEventListener("input", () => {
+      if (confirmPasswordInput.value === passwordInput.value) {
+        confirmPasswordInput.style.borderBottomColor = "#2c5b84";
+        matchMsg.style.display = "none";
+      } else {
+        confirmPasswordInput.style.borderBottomColor = "crimson";
+        matchMsg.style.display = "block";
+      }
+    });
+  </script>
+  <script src="budgetbuddy.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Budget Buddy</title>
+
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+
+    :root {
+      --navy: #112d60;
+      --background: #d9d9d9;
+      --card: #080a0e;
+      --card-header: #141923;
+      --cyan: #40c0e7;
+      --muted: #b0b8c6;
+      --line: #2b303a;
+    }
+
+
+    body {
+      margin: 0;
+      background: #eceef2;
+      color: #111827;
+      font-family: "Poppins", Arial, sans-serif;
+    }
+
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    img {
+      display: block;
+    }
+
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      width: 100%;
+      max-width: 1440px;
+      min-height: 1024px;
+      margin-inline: auto;
+      background: var(--background);
+      border-radius: 40px;
+      overflow: hidden;
+    }
+
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 48px 24px 36px;
+      background: var(--navy);
+      color: white;
+    }
+
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+    }
+
+
+    .nav-label {
+      margin: 64px 12px 16px;
+      color: #b7c6e0;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+
+    .nav-item img {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #e4eaf4;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+
+    .profile-details {
+      min-width: 0;
+    }
+
+
+    .profile-name {
+      margin: 0;
+      font-size: 13px;
+    }
+
+
+    .profile-email {
+      margin: 4px 0 0;
+      color: #bac9e3;
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+
+
+    /* Main content */
+    .main {
+      min-width: 0;
+      padding: 48px 40px;
+    }
+
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: #596273;
+      font-size: 14px;
+    }
+
+
+    .month-label {
+      padding: 10px 16px;
+      border: 1px solid #b8bec8;
+      border-radius: 12px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+
+    /* Income, balance, and calendar */
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.15fr;
+      gap: 20px;
+      min-height: 264px;
+      align-items: stretch;
+    }
+
+
+    .summary-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      align-self: start;
+      min-width: 0;
+      min-height: 175px;
+      padding: 20px 24px;
+      border-radius: 24px;
+      background: var(--card);
+      color: white;
+    }
+
+
+    .summary-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 15px;
+      background: var(--navy);
+    }
+
+
+    .summary-icon img {
+      width: 28px;
+      height: 28px;
+    }
+
+
+    .summary-card h2 {
+      margin: 10px 0 4px;
+      color: #c2c8d2;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+
+    .amount {
+      margin: 0;
+      font-size: clamp(23px, 2.3vw, 32px);
+      font-weight: 500;
+      line-height: 1.35;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+
+   
+    .calendar {
+      min-width: 0;
+      padding: 20px;
+      border: 1px solid #c5cad1;
+      border-radius: 24px;
+      background: #f5f6f8;
+    }
+
+
+    .calendar-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+
+    .calendar-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+
+    .calendar-badge {
+      color: #637083;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      text-align: center;
+    }
+
+
+    .calendar-grid span {
+      display: grid;
+      place-items: center;
+      min-height: 26px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+
+    .calendar-grid .weekday {
+      color: #637083;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+
+    .calendar-grid .today {
+      background: var(--navy);
+      color: white;
+      font-weight: 600;
+    }
+
+
+    /* Expenses tracker */
+    .tracker {
+      margin-top: 36px;
+    }
+
+
+    .tracker-heading {
+      margin-bottom: 18px;
+    }
+
+
+    .tracker-heading h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+
+
+    .tracker-heading p {
+      margin: 6px 0 0;
+      color: #596273;
+      font-size: 13px;
+    }
+
+
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      color: white;
+    }
+
+
+    .expense-table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+
+    .category-column {
+      width: 43%;
+    }
+
+
+    .amount-column {
+      width: 19%;
+    }
+
+
+    .expense-table th,
+    .expense-table td {
+      padding: 24px;
+    }
+
+
+    .expense-table thead {
+      background: var(--card-header);
+    }
+
+
+    .expense-table thead th {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      color: #d9dfea;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+
+    .expense-table .number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+
+    .expense-table tbody tr {
+      border-bottom: 1px solid var(--line);
+    }
+
+
+    .expense-table tbody th {
+      text-align: left;
+      font-weight: 400;
+    }
+
+
+    .category-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+
+    .category-dot {
+      width: 8px;
+      height: 8px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+
+    .category-description {
+      display: block;
+      margin-top: 8px;
+      margin-left: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+
+    .expense-table tbody td {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+
+    .expense-table tfoot {
+      background: var(--card-header);
+    }
+
+
+    .expense-table tfoot th,
+    .expense-table tfoot td {
+      padding-top: 22px;
+      padding-bottom: 22px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+
+    .expense-table tfoot th {
+      text-align: left;
+    }
+
+
+    .expense-table tfoot td {
+      color: #c7ceda;
+    }
+
+
+    .table-note {
+      margin: 14px 4px 0;
+      color: #596273;
+      font-size: 12px;
+    }
+
+
+    a:focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 4px;
+    }
+
+
+   
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 220px minmax(0, 1fr);
+      }
+
+
+      .main {
+        padding: 32px 24px;
+      }
+
+
+      .sidebar {
+        padding-inline: 18px;
+      }
+
+
+      .brand {
+        font-size: 16px;
+      }
+
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        min-height: 0;
+      }
+
+
+      .calendar {
+        grid-column: 1 / -1;
+      }
+    }
+
+
+    /* Mobile */
+    @media (max-width: 680px) {
+      .app {
+        grid-template-columns: 1fr;
+        min-height: 100vh;
+        border-radius: 0;
+      }
+
+
+      .sidebar {
+        padding: 24px;
+      }
+
+
+      .nav-label {
+        margin-top: 24px;
+      }
+
+
+      .profile {
+        margin-top: 24px;
+      }
+
+
+      .main {
+        padding: 28px 20px;
+      }
+
+
+      .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+
+      .calendar {
+        grid-column: auto;
+      }
+
+
+      .tracker {
+        margin-top: 28px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="./index.html">
+        <img
+          src="https://api.iconify.design/noto-v1/ant.svg"
+          alt=""
+        >
+        <span>Budget Buddy</span>
+      </a>
+
+
+      <nav aria-label="Main navigation">
+        <p class="nav-label">Manage</p>
+
+
+        <a
+          class="nav-item active"
+          href="./index.html"
+          aria-current="page"
+        >
+          <img
+            src="https://api.iconify.design/material-symbols-light/home-app-logo.svg?color=%2340c0e7"
+            alt=""
+          >
+          <span>Dashboard</span>
+        </a>
+
+
+        <a class="nav-item" href="./analytics.html">
+          <img
+            src="https://api.iconify.design/glyphs-poly/analytics.svg?color=%2340c0e7"
+            alt=""
+          >
+          <span>Analytics</span>
+        </a>
+      </nav>
+
+
+      <div class="profile">
+        <div class="avatar" aria-hidden="true">JC</div>
+
+
+        <div class="profile-details">
+          <p class="profile-name">Juan Dela Cruz</p>
+          <p class="profile-email">juandelacruz@gmail.com</p>
+        </div>
+      </div>
+    </aside>
+
+
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h1>Dashboard</h1>
+          <p class="subtitle">
+            Plan your future while building it.
+          </p>
+        </div>
+
+
+        <span class="month-label">October 2026</span>
+      </header>
+
+
+      <section
+        class="summary"
+        aria-label="Account summary and calendar"
+      >
+        <article class="summary-card">
+          <div class="summary-icon">
+            <img
+              src="https://api.iconify.design/fluent/wallet-credit-card-16-filled.svg?color=%230d99ff"
+              alt=""
+            >
+          </div>
+
+
+          <h2>Income</h2>
+          <p class="amount">₱ 0000.00</p>
+        </article>
+
+
+        <article class="summary-card">
+          <div class="summary-icon">
+            <img
+              src="https://api.iconify.design/ic/baseline-credit-score.svg?color=%230d99ff"
+              alt=""
+            >
+          </div>
+
+
+          <h2>Total Balance</h2>
+          <p class="amount">₱ 0000.00</p>
+        </article>
+
+
+        <section
+          class="calendar"
+          aria-label="October 2026 calendar preview"
+        >
+          <div class="calendar-heading">
+            <h2>October 2026</h2>
+            <span class="calendar-badge">Selected: Oct 3</span>
+          </div>
+
+
+          <div class="calendar-grid">
+            <span class="weekday">M</span>
+            <span class="weekday">T</span>
+            <span class="weekday">W</span>
+            <span class="weekday">T</span>
+            <span class="weekday">F</span>
+            <span class="weekday">S</span>
+            <span class="weekday">S</span>
+
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span>1</span>
+            <span>2</span>
+            <span class="today">3</span>
+            <span>4</span>
+
+
+            <span>5</span>
+            <span>6</span>
+            <span>7</span>
+            <span>8</span>
+            <span>9</span>
+            <span>10</span>
+            <span>11</span>
+
+
+            <span>12</span>
+            <span>13</span>
+            <span>14</span>
+            <span>15</span>
+            <span>16</span>
+            <span>17</span>
+            <span>18</span>
+
+
+            <span>19</span>
+            <span>20</span>
+            <span>21</span>
+            <span>22</span>
+            <span>23</span>
+            <span>24</span>
+            <span>25</span>
+
+
+            <span>26</span>
+            <span>27</span>
+            <span>28</span>
+            <span>29</span>
+            <span>30</span>
+            <span>31</span>
+            <span></span>
+          </div>
+        </section>
+      </section>
+
+
+      <section class="tracker" aria-labelledby="tracker-title">
+        <header class="tracker-heading">
+          <h2 id="tracker-title">Expenses Tracker</h2>
+          <p>
+          </p>
+        </header>
+
+
+        <div class="table-container">
+          <table
+            class="expense-table"
+            aria-labelledby="tracker-title"
+            aria-describedby="table-note"
+          >
+            <colgroup>
+              <col class="category-column">
+              <col class="amount-column">
+              <col class="amount-column">
+              <col class="amount-column">
+            </colgroup>
+
+
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col" class="number">Budget</th>
+                <th scope="col" class="number">Actual</th>
+                <th scope="col" class="number">Left</th>
+              </tr>
+            </thead>
+
+
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <span class="category-name">
+                    <span
+                      class="category-dot"
+                      aria-hidden="true"
+                    ></span>
+                    Needs
+                  </span>
+
+
+                  <span class="category-description">
+                    Your essential expenses
+                  </span>
+                </th>
+
+
+                <td class="number">—</td>
+                <td class="number">—</td>
+                <td class="number">—</td>
+              </tr>
+
+
+              <tr>
+                <th scope="row">
+                  <span class="category-name">
+                    <span
+                      class="category-dot"
+                      aria-hidden="true"
+                    ></span>
+                    Wants
+                  </span>
+
+
+                  <span class="category-description">
+                    Things you enjoy
+                  </span>
+                </th>
+
+
+                <td class="number">—</td>
+                <td class="number">—</td>
+                <td class="number">—</td>
+              </tr>
+
+
+              <tr>
+                <th scope="row">
+                  <span class="category-name">
+                    <span
+                      class="category-dot"
+                      aria-hidden="true"
+                    ></span>
+                    Savings
+                  </span>
+
+
+                  <span class="category-description">
+                    Funds for your future
+                  </span>
+                </th>
+
+
+                <td class="number">—</td>
+                <td class="number">—</td>
+                <td class="number">—</td>
+              </tr>
+            </tbody>
+
+
+            <tfoot>
+              <tr>
+                <th scope="row">Total</th>
+                <td class="number">—</td>
+                <td class="number">—</td>
+                <td class="number">—</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+
+        <p class="table-note" id="table-note">
+        </p>
+      </section>
+    </main>
+  </div>
+  <script src="budgetbuddy.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Budget Buddy — Analytics</title>
+
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+
+    :root {
+      --navy: #112d60;
+      --actual: #0d99ff;
+      --text: #111827;
+      --muted: #667085;
+    }
+
+
+    body {
+      margin: 0;
+      background: #edf0f5;
+      color: var(--text);
+      font-family: "Poppins", Arial, sans-serif;
+    }
+
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    img {
+      display: block;
+    }
+
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      width: 100%;
+      max-width: 1440px;
+      min-height: 1024px;
+      margin-inline: auto;
+      border-radius: 40px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+
+   
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 48px 24px 36px;
+      background: var(--navy);
+      color: #fff;
+    }
+
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+    }
+
+
+    .nav-label {
+      margin: 64px 14px 16px;
+      color: #bdcce4;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 3px 0 var(--cyan);
+    }
+
+
+    .nav-link img {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #e4eaf4;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+
+    .profile-details {
+      min-width: 0;
+    }
+
+
+    .profile-name {
+      margin: 0;
+      font-size: 13px;
+    }
+
+
+    .profile-email {
+      margin: 4px 0 0;
+      color: #bdcce4;
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+
+
+    /* Main content */
+    .main {
+      min-width: 0;
+      padding: 48px;
+    }
+
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.8px;
+    }
+
+
+    .page-description {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+
+    .month-label {
+      padding: 10px 16px;
+      border: 1px solid #d2d7df;
+      border-radius: 12px;
+      background: #f5f6f8;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+
+    /* Chart card */
+    .chart-card {
+      margin: 0;
+      padding: 28px;
+      border: 1px solid #dfe3ea;
+      border-radius: 24px;
+      background: #fff;
+    }
+
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+
+    .chart-header h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+
+
+    .chart-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-top: 6px;
+      font-size: 12px;
+    }
+
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+
+    .swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+    }
+
+
+    .swatch.budget {
+      background: var(--navy);
+    }
+
+
+    .swatch.actual {
+      background: var(--actual);
+    }
+
+
+    .axis-caption {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+
+    .chart-scroll {
+      overflow-x: auto;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+
+    .chart-inner {
+      min-width: 580px;
+    }
+
+
+    .chart-body {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      height: 320px;
+    }
+
+
+    /* Shared scale: ₱0 to ₱4,000 */
+    .y-axis {
+      position: relative;
+      color: var(--muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+
+    .tick {
+      position: absolute;
+      top: var(--position);
+      right: 12px;
+      transform: translateY(-50%);
+    }
+
+
+    .plot {
+      position: relative;
+      background: #f1f3f6;
+      border-bottom: 1px solid #b9c1ce;
+    }
+
+
+    .gridlines {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+
+    .gridlines span {
+      width: 100%;
+      border-top: 1px solid #dce1e8;
+    }
+
+
+    .bar-groups {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      height: 100%;
+      padding-inline: 20px;
+      gap: 24px;
+    }
+
+
+    .bar-pair {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      height: 100%;
+    }
+
+
+    .bar {
+      position: relative;
+      width: 52px;
+      max-width: 40%;
+      height: var(--height);
+      border-radius: 7px 7px 0 0;
+    }
+
+
+    .bar.budget {
+      background: var(--navy);
+    }
+
+
+    .bar.actual {
+      background: var(--actual);
+    }
+
+
+    .bar-value {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      color: #344054;
+      font-size: 11px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+
+    .x-labels {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin-left: 64px;
+      padding: 16px 20px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+
+    .chart-note {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid #e4e7ec;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+
+    .chart-note strong {
+      color: #344054;
+      font-weight: 500;
+    }
+
+
+    /* Example insights */
+    .insights {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+
+    .insight {
+      padding: 18px 20px;
+      border: 1px solid #dfe3ea;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+
+    .insight h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+
+    .insight p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+
+    .insight small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+
+    .positive {
+      color: #167048;
+    }
+
+
+    .warning {
+      color: #b54708;
+    }
+
+
+    a:focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 4px;
+    }
+
+
+    /* Tablet */
+    @media (max-width: 1050px) {
+      .app {
+        grid-template-columns: 220px minmax(0, 1fr);
+        border-radius: 28px;
+      }
+
+
+      .sidebar {
+        padding-inline: 18px;
+      }
+
+
+      .brand {
+        font-size: 16px;
+      }
+
+
+      .main {
+        padding: 36px 24px;
+      }
+
+
+      .chart-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+
+      .insights {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    /* Mobile */
+    @media (max-width: 700px) {
+      .app {
+        grid-template-columns: 1fr;
+        min-height: 100vh;
+        border-radius: 0;
+      }
+
+
+      .sidebar {
+        padding: 24px;
+      }
+
+
+      .nav-label {
+        margin: 24px 0 12px;
+      }
+
+
+      .nav-link {
+        display: inline-flex;
+        margin: 0 8px 8px 0;
+      }
+
+
+      .profile {
+        margin-top: 18px;
+        padding-top: 18px;
+      }
+
+
+      .main {
+        padding: 28px 20px 40px;
+      }
+
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+
+      h1 {
+        font-size: 28px;
+      }
+
+
+      .chart-card {
+        padding: 20px 16px;
+      }
+
+
+      .chart-header h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="./index.html">
+        <img
+          src="https://api.iconify.design/noto-v1/ant.svg"
+          alt=""
+        >
+        <span>Budget Buddy</span>
+      </a>
+
+
+      <nav aria-label="Main navigation">
+        <p class="nav-label">Manage</p>
+
+
+        <a class="nav-link" href="./index.html">
+          <img
+            src="https://api.iconify.design/material-symbols-light/home-app-logo.svg?color=%2340c0e7"
+            alt=""
+          >
+          <span>Dashboard</span>
+        </a>
+
+
+        <a
+          class="nav-link active"
+          href="./analytics.html"
+          aria-current="page"
+        >
+          <img
+            src="https://api.iconify.design/glyphs-poly/analytics.svg?color=%2340c0e7"
+            alt=""
+          >
+          <span>Analytics</span>
+        </a>
+      </nav>
+
+
+      <div class="profile">
+        <div class="avatar" aria-hidden="true">JC</div>
+
+
+        <div class="profile-details">
+          <p class="profile-name">Juan Dela Cruz</p>
+          <p class="profile-email">juandelacruz@gmail.com</p>
+        </div>
+      </div>
+    </aside>
+
+
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h1>Analytics</h1>
+          <p class="page-description">
+            Plan your future while building it.
+          </p>
+        </div>
+
+
+        <span class="month-label">October 2026</span>
+      </header>
+
+
+      <figure class="chart-card" aria-labelledby="chart-title">
+        <header class="chart-header">
+          <div>
+            <h2 id="chart-title">Budget vs. Actual</h2>
+            <p>Monthly comparison by category.</p>
+          </div>
+
+
+          <div class="legend" aria-label="Chart legend">
+            <span class="legend-item">
+              <span class="swatch budget" aria-hidden="true"></span>
+              Budget
+            </span>
+
+
+            <span class="legend-item">
+              <span class="swatch actual" aria-hidden="true"></span>
+              Actual
+            </span>
+          </div>
+        </header>
+
+
+       
+
+
+        <div class="chart-scroll">
+          <div class="chart-inner">
+            <div class="chart-body">
+              <div class="y-axis" aria-hidden="true">
+                <span class="tick" style="--position: 0%;">₱4,000</span>
+                <span class="tick" style="--position: 25%;">₱3,000</span>
+                <span class="tick" style="--position: 50%;">₱2,000</span>
+                <span class="tick" style="--position: 75%;">₱1,000</span>
+                <span class="tick" style="--position: 100%;">₱0</span>
+              </div>
+
+
+              <div
+                class="plot"
+                role="img"
+                aria-label="Sample Budget versus Actual chart.
+                Needs: budget 3,000 pesos, actual 2,400 pesos.
+                Wants: budget 2,000 pesos, actual 2,600 pesos.
+                Savings: target 2,800 pesos, saved 2,800 pesos."
+              >
+                <div class="gridlines" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+
+
+                <div class="bar-groups" aria-hidden="true">
+                  <!-- Needs -->
+                  <div class="bar-pair">
+                    <div class="bar budget" style="--height: 75%;">
+                      <span class="bar-value">₱3,000</span>
+                    </div>
+
+
+                    <div class="bar actual" style="--height: 60%;">
+                      <span class="bar-value">₱2,400</span>
+                    </div>
+                  </div>
+
+
+                  <!-- Wants -->
+                  <div class="bar-pair">
+                    <div class="bar budget" style="--height: 50%;">
+                      <span class="bar-value">₱2,000</span>
+                    </div>
+
+
+                    <div class="bar actual" style="--height: 65%;">
+                      <span class="bar-value">₱2,600</span>
+                    </div>
+                  </div>
+
+
+                  <!-- Savings -->
+                  <div class="bar-pair">
+                    <div class="bar budget" style="--height: 70%;">
+                      <span class="bar-value">₱2,800</span>
+                    </div>
+
+
+                    <div class="bar actual" style="--height: 70%;">
+                      <span class="bar-value">₱2,800</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="x-labels">
+              <span>Needs</span>
+              <span>Wants</span>
+              <span>Savings</span>
+            </div>
+          </div>
+        </div>
+
+
+       
+      </figure>
+
+
+      <section class="insights" aria-label="Sample chart insights">
+        <article class="insight">
+          <h3>Needs</h3>
+          <p class="positive">₱600 below budget</p>
+          <small>Budget ₱3,000 · Actual ₱2,400</small>
+        </article>
+
+
+        <article class="insight">
+          <h3>Wants</h3>
+          <p class="warning">₱600 over budget</p>
+          <small>Budget ₱2,000 · Actual ₱2,600</small>
+        </article>
+
+
+        <article class="insight">
+          <h3>Savings</h3>
+          <p class="positive">Target reached</p>
+          <small>Target ₱2,800 · Saved ₱2,800</small>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="budgetbuddy.js"></script>
+</body>
+</html>
